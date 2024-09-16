@@ -106,6 +106,11 @@ export const TONConnectPage: FC = () => {
       return;
     }
 
+    if (!publicKey || typeof publicKey.toString() === "undefined") {
+      alert("Error: TON wallet is not connected properly. Please connect your wallet.");
+      return;
+    }
+
     await addDoc(collection(db, "rooms"), {
       username: telegramUser.username,
       minBid: Number(minBid),

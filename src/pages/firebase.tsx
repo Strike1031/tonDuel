@@ -8,9 +8,8 @@ const firebaseConfig = {
   storageBucket: "tongame-3f1de.appspot.com",
   messagingSenderId: "623586846030",
   appId: "1:623586846030:web:44ed50996abf50dea92a1f",
-  measurementId: "G-LS98KMDLXM"
 };
-
+//   // measurementId: "G-LS98KMDLXM"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
