@@ -31,7 +31,7 @@ import { db } from "../firebase"; // Import Firebase configuration
 
 export const TONConnectPage: FC = () => {
   const wallet = useTonWallet();
- 
+
   if (!wallet) {
     return (
       <Placeholder
@@ -42,13 +42,13 @@ export const TONConnectPage: FC = () => {
             <Text>
               To display the data related to the TON Connect, it is required to connect your wallet
             </Text>
-            <TonConnectButton className='ton-connect-page__button'/>
+            <TonConnectButton className='ton-connect-page__button' />
           </>
         }
       />
     );
   }
-  
+
   const {
     account: { chain, publicKey, address },
     device: {
@@ -64,8 +64,8 @@ export const TONConnectPage: FC = () => {
   const [user, setUser] = useState(null);
   const [telegramUser, setTelegramUser] = useState<any>(null);
 
-   // Fetch Telegram user data from Telegram WebApp
-   useEffect(() => {
+  // Fetch Telegram user data from Telegram WebApp
+  useEffect(() => {
     if (typeof window !== "undefined" && (window as any).Telegram && (window as any).Telegram.WebApp) {
       (window as any).Telegram.WebApp.ready(); // Initialize the Telegram Web App
       const telegramData = (window as any).Telegram.WebApp.initDataUnsafe?.user;
@@ -131,7 +131,7 @@ export const TONConnectPage: FC = () => {
       return;
     }
 
-    
+
     const roomRef = doc(db, "rooms", roomId);
     const roomDoc = await getDoc(roomRef);
     const roomData = roomDoc.data();
@@ -140,7 +140,7 @@ export const TONConnectPage: FC = () => {
       alert("This room is already full.");
       return;
     }
-    
+
     if (!publicKey || typeof publicKey.toString() === "undefined") {
       alert("Error: TON wallet is not connected properly. Please connect your wallet.");
       return;
@@ -161,10 +161,10 @@ export const TONConnectPage: FC = () => {
   // Simulate coin flip and determine winner
   const startGame = async (roomId: any) => {
     const roomRef = doc(db, "rooms", roomId);
-    const duelResult = Math.random() < 0.5 ;
-     // Get the room document
-     const roomDoc = await getDoc(roomRef);
-     const roomData = roomDoc.data();
+    const duelResult = Math.random() < 0.5;
+    // Get the room document
+    const roomDoc = await getDoc(roomRef);
+    const roomData = roomDoc.data();
 
     const winner = duelResult ? roomData.username : roomData.player2Username;
     const winnerAddress = duelResult ? roomData.player1 : roomData.player2;
@@ -193,59 +193,61 @@ export const TONConnectPage: FC = () => {
   //   }
   // };
 
-
+  const isWalletConnected = wallet && wallet.account?.publicKey;
+  useEffect(() => {
+    console.log("isWalletConnected", isWalletConnected);
+  }, [isWalletConnected])
+  
   return (
     <List>
-      {'imageUrl' in wallet && (
-        <>
-          <TonConnectButton className='ton-connect-page__button-connected'/>
-          <div className="Card">
-        <h1>CoinFlip Duel Game </h1>
-        <h4>You can challenge others to a duel using TON.</h4>
+      <>
+        <TonConnectButton className='ton-connect-page__button-connected' />
+        <div className="Card">
+          <h1>CoinFlip Duel Game </h1>
+          <h4>You can challenge others to a duel using TON.</h4>
 
-        {
-          <>
-            <input
-              type="number"
-              value={minBid}
-              onChange={(e) => setMinBid(e.target.value)}
-              placeholder="Enter minimum bid"
-              style={{ marginTop: "10px", marginRight: "10px" }}
-            />
-            <button onClick={createRoom}>Create a room 🤞</button>
-          </>}
+          { isWalletConnected && (
+            <>
+              <input
+                type="number"
+                value={minBid}
+                onChange={(e) => setMinBid(e.target.value)}
+                placeholder="Enter minimum bid"
+                style={{ marginTop: "10px", marginRight: "10px" }}
+              />
+              <button onClick={createRoom}>Create a room 🤞</button>
+            </> )}
 
-        {/* Room list */}
-        <h2>Available Rooms</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Minimum Bid</th>
-              <th>Expires In</th>
-              <th>Join</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rooms.map((room) => (
-              <tr key={room._id.toString()}>
-                <td>{room.username}</td>
-                <td>{room.minBid}</td>
-                <td>30 minutes from {new Date(room.createdAt).toLocaleTimeString()}</td>
-                <td>
-                  {room.player2 ? (
-                    "Room Full"
-                  ) : (
-                    <button onClick={() => joinRoom(room.id)}>Join Room</button>
-                  )}
-                </td>
+          {/* Room list */}
+          <h2>Available Rooms</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Minimum Bid</th>
+                <th>Expires In</th>
+                <th>Join</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-        </>
-      )}
+            </thead>
+            <tbody>
+              {rooms.map((room) => (
+                <tr key={room._id.toString()}>
+                  <td>{room.username}</td>
+                  <td>{room.minBid}</td>
+                  <td>30 minutes from {new Date(room.createdAt).toLocaleTimeString()}</td>
+                  <td>
+                    {room.player2 ? (
+                      "Room Full"
+                    ) : (
+                      <button onClick={() => joinRoom(room.id)}>Join Room</button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
     </List>
   );
 };
