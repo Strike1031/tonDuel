@@ -40,7 +40,7 @@ export const TONConnectPage: FC = () => {
   const publicKeyRef = useRef(wallet?.account?.publicKey);  // Store the wallet's public key
   
   const fetchRooms = useCallback(async () => {
-    if (roomsFetched.current) return; // Prevent fetching if rooms are already fetched
+ //   if (roomsFetched.current) return; // Prevent fetching if rooms are already fetched
     const roomsCollection = collection(db, "rooms");
     const activeRoomsQuery = query(
       roomsCollection,
