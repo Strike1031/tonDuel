@@ -140,6 +140,11 @@ export const TONConnectPage: FC = () => {
       alert("This room is already full.");
       return;
     }
+    
+    if (!publicKey || typeof publicKey.toString() === "undefined") {
+      alert("Error: TON wallet is not connected properly. Please connect your wallet.");
+      return;
+    }
 
     // Update the room with Player2 (joiner)
     await updateDoc(roomRef, {
@@ -154,7 +159,7 @@ export const TONConnectPage: FC = () => {
   };
 
   // Simulate coin flip and determine winner
-  const startGame = async (roomId) => {
+  const startGame = async (roomId: any) => {
     const roomRef = doc(db, "rooms", roomId);
     const duelResult = Math.random() < 0.5 ;
      // Get the room document
